@@ -2,10 +2,14 @@ import duckdb
 import math
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
+
 
 #IF NOT INSTALLED THEN INSTALL spatial
 
-project_location = 'C:/Users/Tyler/Documents/GitHub/soccer-analytics-capstone-template'
+project_location = Path(__file__).parent.parent 
+
+
 #'C://Users/Tyler/Documents/GitHub/soccer-analytics-capstone-template/data'
 #'C:/Users/Tyler/Documents/GitHub/soccer-analytics-capstone-template/eda'
 
@@ -109,29 +113,29 @@ duckdb.sql(f"""
                       percent_q2 percent_q2_pass_dist, percent_q3 percent_q3_pass_dist, percent_q4 percent_q4_pass_dist, pass_shot_assist_per_minute
                       FROM (
                       SELECT player_id
-                      FROM read_parquet('{project_location}/eda/shot_k_means.parquet') 
+                      FROM read_parquet('{project_location}/shot_k_means.parquet') 
 
                       UNION
 
                       SELECT player_id
-                      FROM read_parquet('{project_location}/eda/carry_k_means.parquet') 
+                      FROM read_parquet('{project_location}/carry_k_means.parquet') 
 
                       UNION
 
                       SELECT player_id
-                      FROM read_parquet('{project_location}/eda/defense_k_means.parquet') 
+                      FROM read_parquet('{project_location}/defense_k_means.parquet') 
 
                       UNION
 
                       SELECT player_id
-                      FROM read_parquet('{project_location}/eda/pass_k_means.parquet') 
+                      FROM read_parquet('{project_location}/pass_k_means.parquet') 
                       ) every_player
-                      LEFT JOIN read_parquet('{project_location}/eda/shot_k_means.parquet') s
+                      LEFT JOIN read_parquet('{project_location}/shot_k_means.parquet') s
                         ON every_player.player_id = s.player_id
-                      LEFT JOIN read_parquet('{project_location}/eda/carry_k_means.parquet') c
+                      LEFT JOIN read_parquet('{project_location}/carry_k_means.parquet') c
                         ON every_player.player_id = c.player_id
-                      LEFT JOIN read_parquet('{project_location}/eda/defense_k_means.parquet') d
+                      LEFT JOIN read_parquet('{project_location}/defense_k_means.parquet') d
                         ON every_player.player_id = d.player_id
-                      LEFT JOIN read_parquet('{project_location}/eda/pass_k_means.parquet') p
+                      LEFT JOIN read_parquet('{project_location}/pass_k_means.parquet') p
                         ON every_player.player_id = p.player_id
                     """).write_csv('all_k_means.csv')
